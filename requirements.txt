@@ -1,0 +1,7 @@
+mediapipe==0.10.33
+opencv-python
+numpy
+pillow
+pytest
+sounddevice
+imageio-ffmpeg

@@ -1,0 +1,15 @@
+{
+  "camera_index": 0,
+  "window_name": "Gesture Drawing App",
+  "mirrored_view": true,
+  "max_hands": 2,
+  "min_hand_detection_confidence": 0.3,
+  "min_hand_presence_confidence": 0.3,
+  "min_tracking_confidence": 0.3,
+  "pinch_threshold": 60,
+  "open_threshold": 120,
+  "gesture_cooldown_seconds": 1.2,
+  "draw_thickness": 5,
+  "app_width": 1400,
+  "app_height": 900
+}
