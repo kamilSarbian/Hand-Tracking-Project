@@ -1,7 +1,7 @@
 import math
 from typing import List
 
-from models.hand_data import Point2D, HandMetrics, HandData, FingerState
+from models.hand_data import FingerState, HandData, HandMetrics, Point2D
 
 
 class HandService:
@@ -15,10 +15,7 @@ class HandService:
         return "Right" if raw_label == "Left" else "Left"
 
     def _to_pixel_coords(self, landmark, width: int, height: int) -> Point2D:
-        return Point2D(
-            x=int(landmark.x * width),
-            y=int(landmark.y * height)
-        )
+        return Point2D(x=int(landmark.x * width), y=int(landmark.y * height))
 
     def _calc_distance(self, p1: Point2D, p2: Point2D) -> int:
         return int(math.hypot(p2.x - p1.x, p2.y - p1.y))
@@ -58,13 +55,17 @@ class HandService:
             pinky=self._is_finger_up(pinky_tip, pinky_pip),
         )
 
-    def extract_hands(self, result, frame_width: int, frame_height: int) -> List[HandData]:
+    def extract_hands(
+        self, result, frame_width: int, frame_height: int
+    ) -> List[HandData]:
         hands_data: List[HandData] = []
 
         if not result.hand_landmarks or not result.handedness:
             return hands_data
 
-        for hand_landmarks, handedness_list in zip(result.hand_landmarks, result.handedness):
+        for hand_landmarks, handedness_list in zip(
+            result.hand_landmarks, result.handedness
+        ):
             raw_label = handedness_list[0].category_name
             label = self._normalize_hand_label(raw_label)
 
@@ -73,21 +74,24 @@ class HandService:
                 for lm in hand_landmarks
             ]
 
-            thumb_tip = self._to_pixel_coords(hand_landmarks[4], frame_width, frame_height)
-            index_tip = self._to_pixel_coords(hand_landmarks[8], frame_width, frame_height)
+            thumb_tip = self._to_pixel_coords(
+                hand_landmarks[4], frame_width, frame_height
+            )
+            index_tip = self._to_pixel_coords(
+                hand_landmarks[8], frame_width, frame_height
+            )
 
             distance_thumb_index = self._calc_distance(thumb_tip, index_tip)
             radius = self._calc_radius(distance_thumb_index)
 
             center_point = Point2D(
-                x=(thumb_tip.x + index_tip.x) // 2,
-                y=(thumb_tip.y + index_tip.y) // 2
+                x=(thumb_tip.x + index_tip.x) // 2, y=(thumb_tip.y + index_tip.y) // 2
             )
 
             metrics = HandMetrics(
                 distance_thumb_index=distance_thumb_index,
                 pinch_active=distance_thumb_index <= self.pinch_threshold,
-                radius=radius
+                radius=radius,
             )
 
             fingers = self._build_finger_state(hand_landmarks, raw_label)
@@ -99,7 +103,7 @@ class HandService:
                 index_tip=index_tip,
                 center_point=center_point,
                 metrics=metrics,
-                fingers=fingers
+                fingers=fingers,
             )
 
             hands_data.append(hand_data)

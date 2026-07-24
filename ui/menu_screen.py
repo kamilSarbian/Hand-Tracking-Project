@@ -1,16 +1,16 @@
-import time
 import math
+import time
 
 from ui.components import (
     create_app_canvas,
     draw_button,
     draw_hand_status_badge,
-    get_hand_badge_positions,
     draw_panel,
     draw_pointer,
     draw_text,
     draw_text_lines,
     draw_top_bar,
+    get_hand_badge_positions,
     point_in_rect,
 )
 
@@ -181,7 +181,9 @@ class MenuScreen:
         if gesture_name != "PINCH" and self.pending_item_index is None:
             self.last_selected_item_index = None
 
-    def render(self, app_width: int, app_height: int, pointer_point=None, hands_data=None):
+    def render(
+        self, app_width: int, app_height: int, pointer_point=None, hands_data=None
+    ):
         layout = self._build_layout(app_width, app_height)
         menu_rects = self._build_menu_rects(layout["right_panel"])
         cache_size = (app_width, app_height)
@@ -218,7 +220,15 @@ class MenuScreen:
             subtitle="Point at a tile, then hold PINCH for 3 seconds to open it",
         )
 
-        draw_panel(canvas, lp_x, lp_y, lp_w, lp_h, bg_color=(25, 30, 38), border_color=(74, 88, 110))
+        draw_panel(
+            canvas,
+            lp_x,
+            lp_y,
+            lp_w,
+            lp_h,
+            bg_color=(25, 30, 38),
+            border_color=(74, 88, 110),
+        )
 
         draw_text(
             canvas,
@@ -307,7 +317,15 @@ class MenuScreen:
             color=(214, 221, 230),
         )
 
-        draw_panel(canvas, rp_x, rp_y, rp_w, rp_h, bg_color=(24, 28, 34), border_color=(75, 89, 111))
+        draw_panel(
+            canvas,
+            rp_x,
+            rp_y,
+            rp_w,
+            rp_h,
+            bg_color=(24, 28, 34),
+            border_color=(75, 89, 111),
+        )
 
         draw_text(
             canvas,

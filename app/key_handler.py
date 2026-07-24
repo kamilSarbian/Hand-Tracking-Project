@@ -6,7 +6,9 @@ class KeyHandler:
     Handles keyboard shortcuts.
     """
 
-    def __init__(self, screen_manager, action_service, recorder, screenshot_dir, logger):
+    def __init__(
+        self, screen_manager, action_service, recorder, screenshot_dir, logger
+    ):
         self.screen_manager = screen_manager
         self.action_service = action_service
         self.recorder = recorder
@@ -42,7 +44,9 @@ class KeyHandler:
 
         if key in (ord("r"), ord("R")):
             if not self.recorder.is_recording:
-                path = self.recorder.start(display_frame.shape[1], display_frame.shape[0])
+                path = self.recorder.start(
+                    display_frame.shape[1], display_frame.shape[0]
+                )
 
                 if path is not None:
                     self.logger.info("Recording started: %s", path)

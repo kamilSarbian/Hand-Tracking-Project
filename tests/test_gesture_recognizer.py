@@ -50,6 +50,8 @@ def test_pinch_requires_stronger_close_distance():
 def test_extra_gestures_are_recognized():
     recognizer = GestureRecognizer()
 
-    assert recognizer.recognize(build_hand(index=True, middle=True, ring=True)) == "THREE"
+    assert (
+        recognizer.recognize(build_hand(index=True, middle=True, ring=True)) == "THREE"
+    )
     assert recognizer.recognize(build_hand(index=True, pinky=True)) == "ROCK"
     assert recognizer.recognize(build_hand(distance=150, thumb=True)) == "THUMBS_UP"

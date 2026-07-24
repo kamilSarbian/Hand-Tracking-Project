@@ -1,13 +1,14 @@
-import cv2
 import queue
 import shutil
 import subprocess
 import threading
 import wave
 from pathlib import Path
-from utils.file_utils import ensure_dir, generate_timestamp_filename
 
+import cv2
 import numpy as np
+
+from utils.file_utils import ensure_dir, generate_timestamp_filename
 
 try:
     import imageio_ffmpeg
@@ -47,17 +48,16 @@ class VideoRecorder:
 
         final_filename = generate_timestamp_filename("recording", "mp4")
         self.current_file_path = str(Path(self.output_dir) / final_filename)
-        temp_video_filename = Path(final_filename).with_stem(Path(final_filename).stem + "_video").name
+        temp_video_filename = (
+            Path(final_filename).with_stem(Path(final_filename).stem + "_video").name
+        )
         self.temp_video_path = str(Path(self.output_dir) / temp_video_filename)
         audio_filename = Path(final_filename).with_suffix(".wav").name
         self.current_audio_path = str(Path(self.output_dir) / audio_filename)
 
         fourcc = cv2.VideoWriter_fourcc(*"mp4v")
         self.writer = cv2.VideoWriter(
-            self.temp_video_path,
-            fourcc,
-            self.fps,
-            (frame_width, frame_height)
+            self.temp_video_path, fourcc, self.fps, (frame_width, frame_height)
         )
 
         if self.writer is None or not self.writer.isOpened():
@@ -126,7 +126,9 @@ class VideoRecorder:
                 wav_file.setsampwidth(2)
                 wav_file.setframerate(self.audio_sample_rate)
 
-                while not self.audio_stop_event.is_set() or not self.audio_queue.empty():
+                while (
+                    not self.audio_stop_event.is_set() or not self.audio_queue.empty()
+                ):
                     try:
                         chunk = self.audio_queue.get(timeout=0.1)
                     except queue.Empty:
@@ -177,7 +179,11 @@ class VideoRecorder:
             return
 
         merged = False
-        if audio_file is not None and audio_file.exists() and audio_file.stat().st_size > 44:
+        if (
+            audio_file is not None
+            and audio_file.exists()
+            and audio_file.stat().st_size > 44
+        ):
             merged = self._mux_audio_video(temp_video, audio_file, final_video)
 
         if not merged:
@@ -190,7 +196,9 @@ class VideoRecorder:
         except Exception:
             pass
 
-    def _mux_audio_video(self, video_path: Path, audio_path: Path, output_path: Path) -> bool:
+    def _mux_audio_video(
+        self, video_path: Path, audio_path: Path, output_path: Path
+    ) -> bool:
         if imageio_ffmpeg is None:
             return False
 
@@ -199,10 +207,14 @@ class VideoRecorder:
             cmd = [
                 ffmpeg_exe,
                 "-y",
-                "-i", str(video_path),
-                "-i", str(audio_path),
-                "-c:v", "copy",
-                "-c:a", "aac",
+                "-i",
+                str(video_path),
+                "-i",
+                str(audio_path),
+                "-c:v",
+                "copy",
+                "-c:a",
+                "aac",
                 "-shortest",
                 str(output_path),
             ]

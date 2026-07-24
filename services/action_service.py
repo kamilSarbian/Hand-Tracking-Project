@@ -15,9 +15,9 @@ class ActionService:
 
         self.current_color = (0, 0, 255)
         self.color_cycle = [
-            (0, 0, 255),    # red
-            (0, 255, 0),    # green
-            (255, 0, 0),    # blue
+            (0, 0, 255),  # red
+            (0, 255, 0),  # green
+            (255, 0, 0),  # blue
             (0, 255, 255),  # yellow
             (255, 0, 255),  # purple
         ]
@@ -86,7 +86,7 @@ class ActionService:
                 drawing_service.draw_point_path(
                     x=hand_data.index_tip.x,
                     y=hand_data.index_tip.y,
-                    color=self.current_color
+                    color=self.current_color,
                 )
                 drawing_detected = True
                 self.status_message = "Drawing"
@@ -130,7 +130,9 @@ class ActionService:
 
         return screenshot_path
 
-    def apply_recording_actions(self, hands_data, recorder, frame_width: int, frame_height: int):
+    def apply_recording_actions(
+        self, hands_data, recorder, frame_width: int, frame_height: int
+    ):
         if not hands_data:
             return None
 
@@ -139,7 +141,11 @@ class ActionService:
             gesture = hand_data.gesture_name
             last_gesture = self.last_gesture_per_hand.get(hand_key)
 
-            if gesture == "ROCK" and last_gesture != "ROCK" and self._can_trigger(hand_key, "ROCK"):
+            if (
+                gesture == "ROCK"
+                and last_gesture != "ROCK"
+                and self._can_trigger(hand_key, "ROCK")
+            ):
                 if not recorder.is_recording:
                     path = recorder.start(frame_width, frame_height)
                     if path is not None:

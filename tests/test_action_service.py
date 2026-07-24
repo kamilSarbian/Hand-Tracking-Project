@@ -1,8 +1,8 @@
 from pathlib import Path
 
+from models.hand_data import FingerState, HandData, HandMetrics, Point2D
 from services.action_service import ActionService
 from services.drawing_service import DrawingService
-from models.hand_data import HandData, Point2D, HandMetrics, FingerState
 
 
 def build_hand(label="Right", gesture="POINT", x=100, y=100):
@@ -15,19 +15,11 @@ def build_hand(label="Right", gesture="POINT", x=100, y=100):
         thumb_tip=Point2D(80, 100),
         index_tip=Point2D(x, y),
         center_point=Point2D(90, 100),
-        metrics=HandMetrics(
-            distance_thumb_index=50,
-            pinch_active=False,
-            radius=25
-        ),
+        metrics=HandMetrics(distance_thumb_index=50, pinch_active=False, radius=25),
         fingers=FingerState(
-            thumb=False,
-            index=True,
-            middle=False,
-            ring=False,
-            pinky=False
+            thumb=False, index=True, middle=False, ring=False, pinky=False
         ),
-        gesture_name=gesture
+        gesture_name=gesture,
     )
 
 
@@ -42,8 +34,7 @@ def test_apply_drawing_actions_point_sets_status_and_draws(tmp_path):
     hands_data = [build_hand(gesture="POINT", x=120, y=140)]
 
     result = action_service.apply_drawing_actions(
-        hands_data=hands_data,
-        drawing_service=drawing_service
+        hands_data=hands_data, drawing_service=drawing_service
     )
 
     assert result is None
@@ -64,8 +55,7 @@ def test_apply_drawing_actions_fist_clears_canvas(tmp_path):
     hands_data = [build_hand(gesture="FIST")]
 
     action_service.apply_drawing_actions(
-        hands_data=hands_data,
-        drawing_service=drawing_service
+        hands_data=hands_data, drawing_service=drawing_service
     )
 
     assert drawing_service.canvas.sum() == 0
@@ -80,8 +70,7 @@ def test_apply_drawing_actions_three_changes_color(tmp_path):
     original_color = action_service.get_color()
 
     action_service.apply_drawing_actions(
-        hands_data=[build_hand(gesture="THREE")],
-        drawing_service=drawing_service
+        hands_data=[build_hand(gesture="THREE")], drawing_service=drawing_service
     )
 
     assert action_service.get_color() != original_color
@@ -98,8 +87,7 @@ def test_apply_screenshot_actions_peace_creates_file(tmp_path):
     hands_data = [build_hand(gesture="PEACE")]
 
     file_path = action_service.apply_screenshot_actions(
-        hands_data=hands_data,
-        frame=fake_frame_path_ready
+        hands_data=hands_data, frame=fake_frame_path_ready
     )
 
     assert file_path is not None
@@ -113,10 +101,7 @@ def test_apply_screenshot_actions_no_hands_sets_wait_status(tmp_path):
     action_service = ActionService(screenshot_dir=str(tmp_path))
     fake_frame = __import__("numpy").zeros((100, 100, 3), dtype="uint8")
 
-    file_path = action_service.apply_screenshot_actions(
-        hands_data=[],
-        frame=fake_frame
-    )
+    file_path = action_service.apply_screenshot_actions(hands_data=[], frame=fake_frame)
 
     assert file_path is None
     assert action_service.get_status_message() == "Waiting for a hand"

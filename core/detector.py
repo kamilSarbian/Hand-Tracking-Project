@@ -2,11 +2,11 @@ import cv2
 import mediapipe as mp
 
 from config import (
-    MODEL_PATH,
     MAX_HANDS,
     MIN_HAND_DETECTION_CONFIDENCE,
     MIN_HAND_PRESENCE_CONFIDENCE,
     MIN_TRACKING_CONFIDENCE,
+    MODEL_PATH,
 )
 
 BaseOptions = mp.tasks.BaseOptions
@@ -30,10 +30,7 @@ class HandDetector:
     def detect(self, frame):
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-        mp_image = mp.Image(
-            image_format=mp.ImageFormat.SRGB,
-            data=rgb_frame
-        )
+        mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
 
         timestamp_ms = int(cv2.getTickCount() / cv2.getTickFrequency() * 1000)
         return self.landmarker.detect_for_video(mp_image, timestamp_ms)

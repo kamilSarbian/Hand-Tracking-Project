@@ -1,5 +1,5 @@
-from services.hand_service import HandService
 from models.hand_data import Point2D
+from services.hand_service import HandService
 
 
 class FakeLandmark:
@@ -30,10 +30,7 @@ def test_extract_hands_returns_single_hand():
     service = HandService(mirrored_view=False, pinch_threshold=60)
 
     fake_hand = build_fake_hand()
-    result = FakeResult(
-        hand_landmarks=[fake_hand],
-        handedness=[[FakeCategory("Left")]]
-    )
+    result = FakeResult(hand_landmarks=[fake_hand], handedness=[[FakeCategory("Left")]])
 
     hands = service.extract_hands(result, frame_width=1000, frame_height=500)
 
@@ -47,10 +44,7 @@ def test_extract_hands_mirrored_label_swaps_left_to_right():
     service = HandService(mirrored_view=True, pinch_threshold=60)
 
     fake_hand = build_fake_hand()
-    result = FakeResult(
-        hand_landmarks=[fake_hand],
-        handedness=[[FakeCategory("Left")]]
-    )
+    result = FakeResult(hand_landmarks=[fake_hand], handedness=[[FakeCategory("Left")]])
 
     hands = service.extract_hands(result, frame_width=1000, frame_height=500)
 
@@ -62,10 +56,7 @@ def test_extract_hands_detects_pinch_as_false_for_large_distance():
     service = HandService(mirrored_view=False, pinch_threshold=60)
 
     fake_hand = build_fake_hand()
-    result = FakeResult(
-        hand_landmarks=[fake_hand],
-        handedness=[[FakeCategory("Left")]]
-    )
+    result = FakeResult(hand_landmarks=[fake_hand], handedness=[[FakeCategory("Left")]])
 
     hands = service.extract_hands(result, frame_width=1000, frame_height=500)
 

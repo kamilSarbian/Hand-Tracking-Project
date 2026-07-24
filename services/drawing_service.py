@@ -33,11 +33,7 @@ class DrawingService:
 
         if self.last_draw_point is not None and self.canvas is not None:
             cv2.line(
-                self.canvas,
-                self.last_draw_point,
-                current_point,
-                color,
-                self.thickness
+                self.canvas, self.last_draw_point, current_point, color, self.thickness
             )
 
         self.last_draw_point = current_point

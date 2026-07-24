@@ -5,12 +5,12 @@ from ui.components import (
     create_app_canvas,
     draw_button,
     draw_hand_status_badge,
-    get_hand_badge_positions,
     draw_panel,
     draw_pointer,
     draw_text,
     draw_text_lines,
     draw_top_bar,
+    get_hand_badge_positions,
     point_in_rect,
 )
 
@@ -69,10 +69,15 @@ class HelpScreen:
     def _back_countdown_number(self):
         if self.back_pending_started_at is None:
             return None
-        remaining = max(0.0, self.countdown_seconds - (time.monotonic() - self.back_pending_started_at))
+        remaining = max(
+            0.0,
+            self.countdown_seconds - (time.monotonic() - self.back_pending_started_at),
+        )
         return max(1, math.ceil(remaining))
 
-    def render(self, app_width: int, app_height: int, pointer_point=None, hands_data=None):
+    def render(
+        self, app_width: int, app_height: int, pointer_point=None, hands_data=None
+    ):
         layout = self._build_layout(app_width, app_height)
         content_x, content_y, content_w, content_h = layout["content_rect"]
         cache_size = (app_width, app_height)
@@ -145,11 +150,23 @@ class HelpScreen:
             subtitle="Hold PINCH for 3 seconds",
             is_hovered=back_hovered,
             is_active=self.back_pending_started_at is not None,
-            badge_text=f"{self._back_countdown_number()}s" if self._back_countdown_number() is not None else None,
+            badge_text=(
+                f"{self._back_countdown_number()}s"
+                if self._back_countdown_number() is not None
+                else None
+            ),
         )
 
         footer_y = app_height - layout["footer_h"]
-        draw_panel(canvas, 0, footer_y, app_width, layout["footer_h"], bg_color=(15, 15, 15), border_thickness=0)
+        draw_panel(
+            canvas,
+            0,
+            footer_y,
+            app_width,
+            layout["footer_h"],
+            bg_color=(15, 15, 15),
+            border_thickness=0,
+        )
 
         draw_text(
             canvas,
@@ -174,7 +191,9 @@ class HelpScreen:
             title="Help",
             subtitle="A quick guide for getting started",
         )
-        draw_panel(canvas, content_x, content_y, content_w, content_h, bg_color=(24, 24, 24))
+        draw_panel(
+            canvas, content_x, content_y, content_w, content_h, bg_color=(24, 24, 24)
+        )
         draw_text(
             canvas,
             "How does this app work?",

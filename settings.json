@@ -10,6 +10,7 @@
   "open_threshold": 120,
   "gesture_cooldown_seconds": 1.2,
   "draw_thickness": 5,
+  "output_dir": "outputs",
   "app_width": 1400,
   "app_height": 900
 }

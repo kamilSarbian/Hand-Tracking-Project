@@ -1,50 +1,55 @@
+import sys
+
 import cv2
 
+from app.app_controller import AppController
+from app.frame_processor import FrameProcessor
+from app.key_handler import KeyHandler
+from app.self_check import run_self_check
 from config import (
+    APP_HEIGHT,
+    APP_WIDTH,
     CAMERA_INDEX,
-    WINDOW_NAME,
+    DRAW_THICKNESS,
+    GESTURE_COOLDOWN_SECONDS,
+    LOG_PATH,
     MIRRORED_VIEW,
     PINCH_THRESHOLD,
-    SCREENSHOT_DIR,
     RECORDING_DIR,
-    GESTURE_COOLDOWN_SECONDS,
-    DRAW_THICKNESS,
-    APP_WIDTH,
-    APP_HEIGHT,
+    SCREENSHOT_DIR,
+    WINDOW_NAME,
 )
 from core.detector import HandDetector
 from core.renderer import HandRenderer
-from services.hand_service import HandService
+from gestures.recognizer import GestureRecognizer
 from services.action_service import ActionService
 from services.drawing_service import DrawingService
-from gestures.recognizer import GestureRecognizer
-from ui.screen_manager import ScreenManager
-from ui.menu_screen import MenuScreen
+from services.hand_service import HandService
 from ui.drawing_screen import DrawingScreen
 from ui.help_screen import HelpScreen
-from ui.screenshot_screen import ScreenshotScreen
+from ui.menu_screen import MenuScreen
 from ui.recording_screen import RecordingScreen
+from ui.screen_manager import ScreenManager
+from ui.screenshot_screen import ScreenshotScreen
+from utils.display import get_screen_size
 from utils.logger import setup_logger
 from utils.video_recorder import VideoRecorder
-from utils.display import get_screen_size
-from app.frame_processor import FrameProcessor
-from app.key_handler import KeyHandler
-from app.app_controller import AppController
+
+logger = setup_logger(log_path=LOG_PATH)
 
 
-logger = setup_logger()
+def main() -> int:
+    """Run the application.
 
-
-def main():
-    """
-    Main app entry point.
+    Returns:
+        Process exit code. Zero indicates a normal shutdown.
     """
     logger.info("Starting application")
 
     cap = cv2.VideoCapture(CAMERA_INDEX)
     if not cap.isOpened():
         logger.error("Could not open camera")
-        return
+        return 1
 
     screen_width, screen_height = get_screen_size(APP_WIDTH, APP_HEIGHT)
     app_width = max(960, min(screen_width - 80, int(screen_width * 0.94)))
@@ -55,16 +60,14 @@ def main():
 
     detector = HandDetector()
     hand_service = HandService(
-        mirrored_view=MIRRORED_VIEW,
-        pinch_threshold=PINCH_THRESHOLD
+        mirrored_view=MIRRORED_VIEW, pinch_threshold=PINCH_THRESHOLD
     )
     recognizer = GestureRecognizer()
     renderer = HandRenderer()
 
     drawing_service = DrawingService(thickness=DRAW_THICKNESS)
     action_service = ActionService(
-        screenshot_dir=SCREENSHOT_DIR,
-        gesture_cooldown_seconds=GESTURE_COOLDOWN_SECONDS
+        screenshot_dir=SCREENSHOT_DIR, gesture_cooldown_seconds=GESTURE_COOLDOWN_SECONDS
     )
     recorder = VideoRecorder(output_dir=RECORDING_DIR)
 
@@ -139,6 +142,11 @@ def main():
         cv2.destroyAllWindows()
         logger.info("Application closed")
 
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    if sys.argv[1:] == ["--self-test"]:
+        raise SystemExit(run_self_check(logger))
+
+    raise SystemExit(main())

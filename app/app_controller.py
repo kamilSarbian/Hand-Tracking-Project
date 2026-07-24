@@ -1,6 +1,6 @@
 import math
 
-from config import APP_WIDTH, APP_HEIGHT
+from config import APP_HEIGHT, APP_WIDTH
 
 
 class AppController:
@@ -50,7 +50,9 @@ class AppController:
         if self.recorder.is_recording:
             self.recorder.write(display_frame)
 
-    def _map_camera_point_to_app_canvas(self, point, frame_width: int, frame_height: int):
+    def _map_camera_point_to_app_canvas(
+        self, point, frame_width: int, frame_height: int
+    ):
         """
         Maps a camera-space point to the full app canvas.
         """
@@ -125,7 +127,9 @@ class AppController:
         self.last_ui_pointer = (smooth_x, smooth_y)
         return self.last_ui_pointer
 
-    def extract_pointer_and_gesture(self, hands_data, frame_width: int, frame_height: int):
+    def extract_pointer_and_gesture(
+        self, hands_data, frame_width: int, frame_height: int
+    ):
         """
         The first detected hand controls the UI.
         """
@@ -149,9 +153,7 @@ class AppController:
     def _build_camera_view(self, frame, hands_data, use_canvas: bool):
         canvas = self.drawing_service.get_canvas() if use_canvas else None
         return self.renderer.draw(
-            frame=frame.copy(),
-            hands_data=hands_data,
-            canvas=canvas
+            frame=frame.copy(), hands_data=hands_data, canvas=canvas
         )
 
     def render(self, frame, hands_data):
@@ -193,8 +195,7 @@ class AppController:
 
         if current_screen == "drawing":
             self.action_service.apply_drawing_actions(
-                hands_data=hands_data,
-                drawing_service=self.drawing_service
+                hands_data=hands_data, drawing_service=self.drawing_service
             )
 
             camera_view = self._build_camera_view(
@@ -240,8 +241,7 @@ class AppController:
         if current_screen == "screenshot":
             try:
                 screenshot_path = self.action_service.apply_screenshot_actions(
-                    hands_data=hands_data,
-                    frame=frame.copy()
+                    hands_data=hands_data, frame=frame.copy()
                 )
             except OSError as exc:
                 screenshot_path = None

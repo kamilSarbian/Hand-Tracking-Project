@@ -1,18 +1,19 @@
-import cv2
 import math
 import time
+
+import cv2
 
 from ui.components import (
     create_app_canvas,
     draw_button,
     draw_hand_status_badge,
     draw_icon_dot,
-    get_hand_badge_positions,
     draw_panel,
     draw_pointer,
     draw_text,
     draw_text_lines,
     draw_top_bar,
+    get_hand_badge_positions,
     point_in_rect,
 )
 
@@ -37,7 +38,12 @@ class RecordingScreen:
         content_h = app_height - content_y - 20
 
         camera_rect = (20, content_y, app_width - side_panel_w - 60, content_h)
-        side_rect = (camera_rect[0] + camera_rect[2] + 20, content_y, side_panel_w, content_h)
+        side_rect = (
+            camera_rect[0] + camera_rect[2] + 20,
+            content_y,
+            side_panel_w,
+            content_h,
+        )
 
         return {
             "camera_rect": camera_rect,
@@ -75,7 +81,10 @@ class RecordingScreen:
     def _back_countdown_number(self):
         if self.back_pending_started_at is None:
             return None
-        remaining = max(0.0, self.countdown_seconds - (time.monotonic() - self.back_pending_started_at))
+        remaining = max(
+            0.0,
+            self.countdown_seconds - (time.monotonic() - self.back_pending_started_at),
+        )
         return max(1, math.ceil(remaining))
 
     def render(
@@ -103,7 +112,7 @@ class RecordingScreen:
 
         cam_x, cam_y, cam_w, cam_h = camera_rect
         fitted_camera = self._fit_frame_to_rect(camera_view, camera_rect)
-        canvas[cam_y:cam_y + cam_h, cam_x:cam_x + cam_w] = fitted_camera
+        canvas[cam_y : cam_y + cam_h, cam_x : cam_x + cam_w] = fitted_camera
 
         side_x, side_y, side_w, side_h = side_rect
         self.back_button_rect = (side_x + 20, side_y + 20, side_w - 40, 92)
@@ -116,9 +125,19 @@ class RecordingScreen:
             subtitle="Hold PINCH for 3 seconds",
             is_hovered=back_hovered,
             is_active=self.back_pending_started_at is not None,
-            badge_text=f"{self._back_countdown_number()}s" if self._back_countdown_number() is not None else None,
+            badge_text=(
+                f"{self._back_countdown_number()}s"
+                if self._back_countdown_number() is not None
+                else None
+            ),
         )
-        draw_text(canvas, f"Status: {status_message}", (side_x + 20, side_y + 520), font_size=18, color=(230, 230, 230))
+        draw_text(
+            canvas,
+            f"Status: {status_message}",
+            (side_x + 20, side_y + 520),
+            font_size=18,
+            color=(230, 230, 230),
+        )
         y = side_y + 568
 
         if hands_data:

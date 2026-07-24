@@ -1,5 +1,6 @@
-import cv2
 from typing import List
+
+import cv2
 
 from models.hand_data import HandData
 

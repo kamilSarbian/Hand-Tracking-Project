@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-
 DEFAULT_FONT_PATH = "C:/Windows/Fonts/segoeui.ttf"
 DEFAULT_BOLD_FONT_PATH = "C:/Windows/Fonts/segoeuib.ttf"
 _FONT_CACHE = {}
@@ -131,7 +130,9 @@ def _fit_ascii_text(text: str, font_size: int, max_width: int) -> str:
 
     fitted = text
     while fitted:
-        text_width = cv2.getTextSize(fitted, cv2.FONT_HERSHEY_SIMPLEX, cv_scale, thickness)[0][0]
+        text_width = cv2.getTextSize(
+            fitted, cv2.FONT_HERSHEY_SIMPLEX, cv_scale, thickness
+        )[0][0]
         if text_width <= max_width:
             return fitted
         fitted = fitted[:-1]
@@ -190,7 +191,9 @@ def draw_button(
         border_thickness=2,
     )
 
-    cv2.rectangle(image, (x + 12, y + 12), (x + 20, y + max(20, h - 12)), accent_color, -1)
+    cv2.rectangle(
+        image, (x + 12, y + 12), (x + 20, y + max(20, h - 12)), accent_color, -1
+    )
 
     title_size = max(17, min(26, int(h * 0.22)))
     subtitle_size = max(12, min(16, int(h * 0.14)))
@@ -221,7 +224,13 @@ def draw_button(
         badge_x = x + w - badge_w - 18
         badge_y = y + 16
 
-        cv2.rectangle(image, (badge_x, badge_y), (badge_x + badge_w, badge_y + badge_h), accent_color, -1)
+        cv2.rectangle(
+            image,
+            (badge_x, badge_y),
+            (badge_x + badge_w, badge_y + badge_h),
+            accent_color,
+            -1,
+        )
         draw_text_centered(
             image,
             badge_text,
@@ -285,7 +294,16 @@ def draw_hand_status_badge(image, x: int, y: int, label: str, gesture: str):
     w, h = 200, 58
     font_size = 14
     text = _fit_ascii_text(f"{label}: {gesture}", font_size=font_size, max_width=w - 22)
-    draw_panel(image, x, y, w, h, bg_color=(30, 34, 40), border_color=(76, 84, 96), border_thickness=2)
+    draw_panel(
+        image,
+        x,
+        y,
+        w,
+        h,
+        bg_color=(30, 34, 40),
+        border_color=(76, 84, 96),
+        border_thickness=2,
+    )
 
     draw_text_centered(
         image,
@@ -296,7 +314,9 @@ def draw_hand_status_badge(image, x: int, y: int, label: str, gesture: str):
     )
 
 
-def get_hand_badge_positions(x: int, y: int, available_w: int, count: int, badge_w: int = 200, gap: int = 12):
+def get_hand_badge_positions(
+    x: int, y: int, available_w: int, count: int, badge_w: int = 200, gap: int = 12
+):
     positions = []
     if count <= 0:
         return positions

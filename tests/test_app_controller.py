@@ -49,9 +49,7 @@ def test_map_camera_point_to_app_canvas_inside_bounds():
     controller = build_controller()
 
     point = controller._map_camera_point_to_app_canvas(
-        point=(320, 240),
-        frame_width=640,
-        frame_height=480
+        point=(320, 240), frame_width=640, frame_height=480
     )
 
     assert point is not None
@@ -68,9 +66,7 @@ def test_map_camera_point_to_app_canvas_none_returns_none():
     controller = build_controller()
 
     point = controller._map_camera_point_to_app_canvas(
-        point=None,
-        frame_width=640,
-        frame_height=480
+        point=None, frame_width=640, frame_height=480
     )
 
     assert point is None

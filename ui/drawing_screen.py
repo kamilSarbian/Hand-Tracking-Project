@@ -1,17 +1,18 @@
-import cv2
 import math
 import time
+
+import cv2
 
 from ui.components import (
     create_app_canvas,
     draw_button,
     draw_hand_status_badge,
-    get_hand_badge_positions,
     draw_panel,
     draw_pointer,
     draw_text,
     draw_text_lines,
     draw_top_bar,
+    get_hand_badge_positions,
     point_in_rect,
 )
 
@@ -82,7 +83,10 @@ class DrawingScreen:
     def _back_countdown_number(self):
         if self.back_pending_started_at is None:
             return None
-        remaining = max(0.0, self.countdown_seconds - (time.monotonic() - self.back_pending_started_at))
+        remaining = max(
+            0.0,
+            self.countdown_seconds - (time.monotonic() - self.back_pending_started_at),
+        )
         return max(1, math.ceil(remaining))
 
     def render(
@@ -111,7 +115,7 @@ class DrawingScreen:
 
         cam_x, cam_y, cam_w, cam_h = camera_rect
         fitted_camera = self._fit_frame_to_rect(camera_view, camera_rect)
-        canvas[cam_y:cam_y + cam_h, cam_x:cam_x + cam_w] = fitted_camera
+        canvas[cam_y : cam_y + cam_h, cam_x : cam_x + cam_w] = fitted_camera
 
         side_x, side_y, side_w, side_h = side_rect
         self.back_button_rect = (
@@ -130,7 +134,11 @@ class DrawingScreen:
             subtitle="Hold PINCH for 3 seconds",
             is_hovered=back_hovered,
             is_active=self.back_pending_started_at is not None,
-            badge_text=f"{self._back_countdown_number()}s" if self._back_countdown_number() is not None else None,
+            badge_text=(
+                f"{self._back_countdown_number()}s"
+                if self._back_countdown_number() is not None
+                else None
+            ),
         )
         draw_text(
             canvas,
@@ -173,7 +181,13 @@ class DrawingScreen:
             )
 
         color_box_y = side_y + side_h - 120
-        cv2.rectangle(canvas, (side_x + 20, color_box_y), (side_x + 80, color_box_y + 40), current_color, -1)
+        cv2.rectangle(
+            canvas,
+            (side_x + 20, color_box_y),
+            (side_x + 80, color_box_y + 40),
+            current_color,
+            -1,
+        )
         draw_text(
             canvas,
             "Current color",
@@ -209,7 +223,13 @@ class DrawingScreen:
         )
         draw_panel(canvas, cam_x, cam_y, cam_w, cam_h, bg_color=(18, 18, 18))
         draw_panel(canvas, side_x, side_y, side_w, side_h, bg_color=(24, 24, 24))
-        draw_text(canvas, "Guide", (side_x + 20, side_y + 150), font_size=28, color=(255, 255, 255))
+        draw_text(
+            canvas,
+            "Guide",
+            (side_x + 20, side_y + 150),
+            font_size=28,
+            color=(255, 255, 255),
+        )
 
         info_lines = [
             "POINT - draw",
